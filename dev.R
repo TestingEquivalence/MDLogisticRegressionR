@@ -20,6 +20,8 @@ predict.lm(wmd,df)
 # logit regression for initial values
 lr <- glm(p ~ wantsMore+education+age,
           data = df, family = binomial("logit"), weights = n)
+
+#or second variant
 lr1 <- glm(cbind(using,notUsing) ~ wantsMore+education+age,
           data = df, family = binomial("logit"))
 
@@ -32,4 +34,15 @@ w=residuals(mdr)
 sum(w*w)
 
 ww=fitted(mdr)-df$p
-sum(ww*ww)
+sqrt(sum(ww*ww))
+
+mdl=min_dst_logit(df, "notUsing","using","wantsMore+education+age",alpha = 0.05,
+                  test=asymptotic)
+
+#checl min distance
+mdl$min.distance
+
+coef(mdr)
+mdl$coef
+# estimation works fine
+coef(lr)

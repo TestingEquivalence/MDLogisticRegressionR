@@ -11,8 +11,10 @@
 #   return(res)
 # }
 
-logit<-qlogis
-logistic <- plogis
+logit=qlogis
+logistic = plogis
+asymptotic="asymptotic"
+bootstrap="bootstrap"
 
 min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
                         test, nSimulation=1000, eps=NA){
@@ -65,29 +67,22 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
   
   # calculate min distance
   mdr$min.distance=sqrt(deviance(mdr))
-   
+  mdr$coef=coef(mdr)
+  names(mdr$coef)=names(coef(lr))
+  
   # #test results
   mdr$alpha=alpha
+  mdr$min.epsilon=NA
+  
   # if ("asymptotic"==test) {
   #   mdr$min.epsilon=asymptoticTest(df=kdf,mdr=mdr)
   # }
   # 
   # if ("bootstrap1"==test){
-  #   mdr$min.epsilon=bootstrapTest1(df,mdr,nSimulation)
+  #   mdr$min.epsilon=bootstrapTest(df,mdr,nSimulation)
   # }
-  # 
-  # if ("bootstrap2"==test){
-  #   mdr$min.epsilon=bootstrapTest2(df,mdr,nSimulation,
-  #                                  lower = mdr$min.distance*1.01,
-  #                                  upper = mdr$min.distance*1.5)
-  # }
-  # 
-  # if ("bootstrap2pvalue"==test){
-  #     mdr$min.epsilon=bootstrapTest2proto(df,mdr,nSimulation,eps)
-  # }
-  # 
-  # 
-  # return(mdr)
+  
+  return(mdr)
 }
 
 
