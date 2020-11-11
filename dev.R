@@ -52,3 +52,6 @@ mdl$dependentVariable
 
 mdl$min.distance
 mdl$min.epsilon
+
+mdlb=min_dst_logit(df, "notUsing","using","wantsMore+education+age",alpha = 0.05,
+                  test=bootstrap)

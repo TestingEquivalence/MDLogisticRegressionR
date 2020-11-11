@@ -1,15 +1,6 @@
 source("asymptoticTest.R")
-
-# counts2logits<-function(df,zeroCounts,oneCounts,covariates){
-#   fr=paste("cbind(",zeroCounts,",",oneCounts,") ~ ",covariates)
-#   fr=as.formula(fr)
-#   res=xtabs(fr, data = df)
-#   res=ftable(res)
-#   res=data.frame(expand.grid(rev(attr(res, "row.vars"))), unclass(res))
-#   names(res)[names(res)=="X1"]=zeroCounts
-#   names(res)[names(res)=="X2"]=oneCounts
-#   return(res)
-# }
+source("bootstrapTest.R")
+source("simulation.R")
 
 logit=qlogis
 logistic = plogis
@@ -17,7 +8,7 @@ asymptotic="asymptotic"
 bootstrap="bootstrap"
 
 min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
-                        test, nSimulation=1000, eps=NA){
+                        test, nSimulation=1000){
   # prepare data
   # look for name of probability
   i=1
@@ -62,7 +53,6 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
   mdr$formula=fr1
   mdr$covariates=covariates
   mdr$dependentVariable=kdf$p
-  mdr$eps=eps
   mdr$n=kdf$n
   
   # calculate min distance
@@ -78,11 +68,19 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
     mdr$min.epsilon=asymptoticTest(mdr=mdr)
   }
 
-  # if ("bootstrap1"==test){
-  #   mdr$min.epsilon=bootstrapTest(df,mdr,nSimulation)
-  # }
+  if ("bootstrap"==test){
+    mdr$min.epsilon=bootstrapTest(df,mdr,nSimulation)
+  }
   
   return(mdr)
 }
 
-
+updateMinDistanceModel<-function(p,mdr,df){
+  n=df[[mdr$zeroCounts]]+df[[mdr$oneCounts]]
+  df[[mdr$oneCounts]]=n*p
+  df[[mdr$zeroCounts]]=n-df[[mdr$oneCounts]]
+  
+  nlr=min_dst_logit(df,zeroCounts =mdr$zeroCounts ,oneCounts =mdr$oneCounts ,
+                    covariates =mdr$covariates ,test =mdr$test ,alpha =mdr$alpha )
+  return(nlr)
+}

@@ -6,7 +6,7 @@ bootstrapVolatility<-function(df,mdr,nSimulation){
   mdr$test="asymptotic"
   f<-function(i){
     np=resample.p(i,n,p)
-    nmdr=updateMinDistanceModel(p=np,lr=mdr,df=df)
+    nmdr=updateMinDistanceModel(p=np,mdr=mdr,df=df)
     return(nmdr$min.distance^2)
   }
   
