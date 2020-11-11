@@ -57,8 +57,8 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
   
   # calculate min distance
   mdr$min.distance=sqrt(deviance(mdr))
-  mdr$coef=coef(mdr)
-  names(mdr$coef)=names(coef(lr))
+  mdr$coefficients=coef(mdr)
+  names(mdr$coefficients)=names(coef(lr))
   
   # test results
   mdr$alpha=alpha
