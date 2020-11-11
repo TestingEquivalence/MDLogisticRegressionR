@@ -1,4 +1,4 @@
-#source("asymptoticTest.R")
+source("asymptoticTest.R")
 
 # counts2logits<-function(df,zeroCounts,oneCounts,covariates){
 #   fr=paste("cbind(",zeroCounts,",",oneCounts,") ~ ",covariates)
@@ -59,9 +59,9 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
   mdr$oneCounts=oneCounts
   mdr$test=test
   mdr$alpha=alpha
-  mdr$formula=fr
+  mdr$formula=fr1
   mdr$covariates=covariates
-  mdr$dependentVariable=p
+  mdr$dependentVariable=kdf$p
   mdr$eps=eps
   mdr$n=kdf$n
   
@@ -70,14 +70,14 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
   mdr$coef=coef(mdr)
   names(mdr$coef)=names(coef(lr))
   
-  # #test results
+  # test results
   mdr$alpha=alpha
   mdr$min.epsilon=NA
   
-  # if ("asymptotic"==test) {
-  #   mdr$min.epsilon=asymptoticTest(df=kdf,mdr=mdr)
-  # }
-  # 
+  if (asymptotic==test) {
+    mdr$min.epsilon=asymptoticTest(mdr=mdr)
+  }
+
   # if ("bootstrap1"==test){
   #   mdr$min.epsilon=bootstrapTest(df,mdr,nSimulation)
   # }

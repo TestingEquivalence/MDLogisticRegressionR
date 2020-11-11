@@ -1,7 +1,7 @@
 source("dataSets.R")
 source("dev1.R")
 source("mdLogitRegression.R")
-
+source("asymptoticTest.R")
 
 #calculate p, which is  the proportion of using
 df=FujiFerilitySurvey()
@@ -46,3 +46,9 @@ coef(mdr)
 mdl$coef
 # estimation works fine
 coef(lr)
+
+fitted(mdl)
+mdl$dependentVariable
+
+mdl$min.distance
+mdl$min.epsilon
