@@ -8,7 +8,7 @@ asymptotic="asymptotic"
 bootstrap="bootstrap"
 
 min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
-                        test, nSimulation=1000){
+                        test, nSimulation=200){
   # prepare data
   # look for name of probability
   i=1

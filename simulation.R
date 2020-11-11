@@ -78,21 +78,12 @@ updateLogitModel<-function(p,lr,df){
   
   df[[depVar]]=p
   nlr=update(lr,data=df)
-  nlr$min.distance=n2(logit(p)-logit(nlr$fitted.values))
+  nlr$min.distance=sqrt(sum((p-nlr$fitted.values)^2))
   if (is.infinite(nlr$min.distance)){browser()}
   
   return(nlr)
 }
 
-updateMinDistanceModel<-function(p,lr,df){
-  n=df[[lr$zeroCounts]]+df[[lr$oneCounts]]
-  df[[lr$oneCounts]]=n*p
-  df[[lr$zeroCounts]]=n-df[[lr$oneCounts]]
-  
-  nlr=min_dst_logit(df,zeroCounts =lr$zeroCounts ,oneCounts =lr$oneCounts ,
-                covariates =lr$covariates ,test =lr$test ,alpha =lr$alpha, eps=lr$eps )
-  return(nlr)
-}
 
 simulatePowerAtPoint<-function(p,df,n,mdr, nSimulation,eps){
   set.seed(01032020)
