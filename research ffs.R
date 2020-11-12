@@ -17,13 +17,13 @@ df$proportionUsing=df$using/df$n
 # using logit refression
 lr <- glm(proportionUsing ~ wantsMore+education+age,
                 data = df, family = binomial("logit"), weights = n)
-lr$min.distance=n2(logit(df$proportionUsing)-logit(lr$fitted.values))
+lr$min.distance=sqrt(sum((df$proportionUsing-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
-set.seed(09052020)
+set.seed(01012021)
 mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                         test = bootstrap2, nSimulation = 1000)
+                         test = bootstrap, nSimulation = 200)
 write.result(mdr,"mdr.csv")
 
 
@@ -36,7 +36,7 @@ lr = glm(proportionUsing ~ wantsMore+education+age,
          data = df, family = binomial("logit"), weights = n)
 
 mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                    test = asymptotic, nSimulation = 1000)
+                    test = asymptotic, nSimulation = 200)
 
 # compute distribution using logit regression 
 res=simulatePowerAtModel(df,n=df$n,
@@ -46,7 +46,7 @@ res=simulatePowerAtModel(df,n=df$n,
 write.results(res,"estimation_lr_power_lr.csv")
 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=logistic(mdr$fitted.values),
+                         p=fitted(mdr),
                          lr=lr,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_lr.csv")
@@ -59,7 +59,7 @@ res=simulatePowerAtModel(df,n=df$n,
 write.results(res,"estimation_lr_power_mdr.csv")
 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=logistic(mdr$fitted.values),
+                         p=fitted(mdr),
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_mdr.csv")

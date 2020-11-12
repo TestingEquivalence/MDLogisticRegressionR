@@ -6,17 +6,8 @@ resample.p<-function(i,n,p){
   }
   
   pdf=data.frame(n=n,p=p)
-  repeat{
-    res=apply(X=pdf, MARGIN=1,FUN = f)
-    res=as.vector(res)
-    ok=TRUE
-    for (r in res){
-      if (r<=0) {ok=FALSE}
-      if (r>=1) {ok=FALSE}
-    }
-    if (ok) {break}
-  }
-  
+  res=apply(X=pdf, MARGIN=1,FUN = f)
+  res=as.vector(res)
   return(res)
 }
 
