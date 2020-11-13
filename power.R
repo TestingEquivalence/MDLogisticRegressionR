@@ -1,8 +1,18 @@
-randomExteriorPoint<-function(df,n,p,lr, updateLR, eps){
+randomExteriorPoint<-function(p,df,mdr, updateLR, eps){
   repeat{
-    sp=resample.p(1,n,p)
-    nlr=updateLR(sp,lr,df)
-    if (nlr$min.distance>=eps){
+    skip= FALSE
+    sp=resample.p(1,mdr$n,p)
+    
+    tryCatch({mdr=updateLR(sp,mdr,df)}, 
+             error = function(e) { skip=TRUE})
+    
+    if(skip) { 
+      print("skipped")
+      next 
+    }  
+    
+    
+    if (mdr$min.distance>=eps){
       return(sp)
     }
   }
@@ -16,6 +26,21 @@ linearBoundaryPoint<-function(exteriorPoint,df,mdr, eps){
   #pmdr=updateMinDistanceModel(p=pa,lr=mdr,df=df)
   return(pa)
 }
+
+linearBoundaryPoint2<-function(interiorPoint,exteriorPoint,df,mdr, eps){
+ 
+  aim<-function(a){
+    lc=linComb(P,Q,a)
+    res = nearestPowerLaw(lc,kmin,kmax,1,3)
+    beta=res$minimum
+    distance=res$objective
+    return(distance-eps)
+  }
+  
+  aMin=uniroot(aim, c(0,1))
+  return(linComb(p,q,aMin$root))
+}
+
 
 simulatePowerAtBoundary<-function(df,n,p,mdr, nSimulation, eps){
   set.seed(01032020)

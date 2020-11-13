@@ -102,9 +102,8 @@ getCluster<-function(){
   # Initiate cluster
   cl <- makeCluster(no_cores,'SOCK')
   clusterExport(cl,c("min_dst_logit","resample.p","updateMinDistanceModel","simulatePowerAtPoint",
-                     "logit", "logistic","n2","l2","ll2","asymptStDev","asymptoticTest",
-                     "bootstrapVolatility","bootstrapTest1","bootstrapTest2proto",
-                     "bootstrapTest2","linearBoundaryPoint"))
+                     "logit", "logistic","asymptStDev","asymptoticTest",
+                     "bootstrapVolatility","bootstrapTest","linearBoundaryPoint"))
   
   return(cl)
 }

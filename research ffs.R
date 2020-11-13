@@ -23,7 +23,7 @@ write.result(lr,"lr.csv")
 # using minimum distance regression
 set.seed(01012021)
 mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                         test = bootstrap, nSimulation = 200)
+                         test = asymptotic, nSimulation = 200)
 write.result(mdr,"mdr.csv")
 
 
