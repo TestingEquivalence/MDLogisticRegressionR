@@ -69,11 +69,11 @@ write.results(res,"estimation_mdr_power_mdr.csv")
 
 # obtain minimum distance model for technical and simulate the test power
 mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                        test = bootstrap2pvalue, nSimulation = 1000, eps=2)
+                        test = asymptotic, nSimulation = 200)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
-                         p=logistic(mdr$fitted.values),
+                         p=fitted(mdr),
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"size_mdr.csv")
