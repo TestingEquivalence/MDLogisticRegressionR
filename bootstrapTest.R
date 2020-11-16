@@ -4,13 +4,31 @@ bootstrapVolatility<-function(df,mdr,nSimulation){
   p=df[[mdr$oneCounts]]/n
   
   mdr$test="asymptotic"
-  f<-function(i){
+  res=rep(NA,nSimulation)
+  i=1
+  
+  repeat{
+    skip= FALSE
     np=resample.p(i,n,p)
-    nmdr=updateMinDistanceModel(p=np,mdr=mdr,df=df)
-    return(nmdr$min.distance^2)
+    
+    tryCatch({
+      nmdr=updateMinDistanceModel(p=np,mdr=mdr,df=df)
+      }, 
+    error = function(e) { 
+      skip=TRUE
+      })
+    
+    if(skip) { 
+      next 
+    }  
+    
+    res[i]=nmdr$min.distance^2
+    i=i+1
+    if (i>nSimulation) break
   }
   
-  res=sapply(c(1:nSimulation),f)
+  
+  
   return(sd(res))
 }
 

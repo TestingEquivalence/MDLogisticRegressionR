@@ -7,7 +7,6 @@ randomExteriorPoint<-function(p,df,mdr, updateLR, eps){
              error = function(e) { skip=TRUE})
     
     if(skip) { 
-      print("skipped")
       next 
     }  
     
