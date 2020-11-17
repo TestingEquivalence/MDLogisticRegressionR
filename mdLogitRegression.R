@@ -38,7 +38,8 @@ min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
   }
   
   #logit regression for initial values
-  lr = glm(fr, data = df, family = binomial("logit"), weights = kdf$n)
+  lr = glm(fr, data = df, family = quasibinomial("logit"), weights = kdf$n)
+  
   
   # calculate minimum distance estimator
   fr1=paste(p,"~ distance(coef)")

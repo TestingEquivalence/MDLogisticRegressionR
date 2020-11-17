@@ -17,27 +17,17 @@ randomExteriorPoint<-function(p,df,mdr, updateLR, eps){
   }
 }
 
-linearBoundaryPoint<-function(exteriorPoint,df,mdr, eps){
-   nmdr=updateMinDistanceModel(p=exteriorPoint,lr=mdr,df=df)
-  a=eps/nmdr$min.distance
-  la=a*logit(exteriorPoint)+(1-a)*nmdr$fitted.values
-  pa=logistic(la)
-  #pmdr=updateMinDistanceModel(p=pa,lr=mdr,df=df)
-  return(pa)
-}
-
-linearBoundaryPoint2<-function(interiorPoint,exteriorPoint,df,mdr, eps){
- 
+linearBoundaryPoint<-function(interiorPoint,exteriorPoint,df,mdr, eps){
+  mdr$test=asymptotic
   aim<-function(a){
-    lc=linComb(P,Q,a)
-    res = nearestPowerLaw(lc,kmin,kmax,1,3)
-    beta=res$minimum
-    distance=res$objective
-    return(distance-eps)
+    #print(a)
+    lc=a*interiorPoint+(1-a)*exteriorPoint
+    nmdr=updateMinDistanceModel(lc,mdr,df)
+    return(nmdr$min.distance-eps)
   }
   
-  aMin=uniroot(aim, c(0,1))
-  return(linComb(p,q,aMin$root))
+  a=uniroot(aim, c(0,1))$root
+  return(a*interiorPoint+(1-a)*exteriorPoint)
 }
 
 
