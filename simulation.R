@@ -76,21 +76,33 @@ updateLogitModel<-function(p,lr,df){
 }
 
 
-simulatePowerAtPoint<-function(p,df,n,mdr, nSimulation,eps){
+simulatePowerAtPoint<-function(p,df,mdr, nSimulation,eps){
   set.seed(01032020)
-  psim=lapply(c(1:nSimulation), resample.p,n,p)
+  psim=lapply(c(1:(nSimulation+100)), resample.p,n=mdr$n,p)
+  res=c()
   
-  f<-function(np){
-    nmdr=updateMinDistanceModel(p=np,lr=mdr,df=df)
+  i=1
+  repeat{
+    skip= FALSE
     
-    if (mdr$test=="bootstrap2pvalue"){
-      return (nmdr$min.epsilon<=mdr$alpha)
-    }
+    tryCatch({
+      nmdr=updateMinDistanceModel(p=psim[[i]],mdr,df)
+      res=c(res,(nmdr$min.epsilon<=eps))
+    }, 
+    error = function(e) { 
+      skip=TRUE
+    })
     
-    return(nmdr$min.epsilon<=eps)
+    if(skip) { 
+      next 
+    }  
+    
+    
+    i=i+1
+    if (i>nSimulation) break
   }
   
-  res=sapply(psim,f)
+  
   return(sum(res==TRUE)/nSimulation)
 }
 

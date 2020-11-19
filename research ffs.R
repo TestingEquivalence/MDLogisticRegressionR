@@ -23,7 +23,7 @@ write.result(lr,"lr.csv")
 # using minimum distance regression
 set.seed(01012021)
 mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                         test = asymptotic, nSimulation = 200)
+                         test = bootstrap, nSimulation = 200)
 write.result(mdr,"mdr.csv")
 
 
@@ -83,9 +83,7 @@ write.results(res,"size_mdr.csv")
 
 # obtain minimum distance model for technical and simulate the test power
 mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                    test = bootstrap2pvalue, nSimulation = 1000, eps=2)
+                    test = asymptotic, nSimulation = 200)
 
-res= simulatePowerAtBoundary(df,n=df$n,
-                             p=logistic(mdr$fitted.values),
-                             mdr,nSimulation=1000,eps=2)
+res= simulatePowerAtBoundary(df,p=df$proportionUsing,mdr, nSimulation=1000, eps=0.35)
 write.csv(res,"power_mdr.csv")
