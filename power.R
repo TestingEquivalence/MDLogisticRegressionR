@@ -37,7 +37,7 @@ simulatePowerAtBoundary<-function(df,p,mdr, nSimulation, eps){
   bndPoints=list()
   test=mdr$test
   mdr$test=asymptotic
-  nPoints=2
+  nPoints=100
   
   for (i in c(1:nPoints)){
     exteriorPoints[[i]]=randomExteriorPoint(p,df,mdr,eps)
