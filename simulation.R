@@ -65,7 +65,7 @@ write.results<-function(res,fname){
 updateLogitModel<-function(p,lr,df){
   df=lr$data
   frm=lr$formula
-  depVar=all.vars(frm)[1]
+  depVar=all.vars(as.formula(frm))[1]
   
   df[[depVar]]=p
   nlr=update(lr,data=df)
