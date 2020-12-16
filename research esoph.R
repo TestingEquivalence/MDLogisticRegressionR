@@ -88,3 +88,13 @@ res=simulatePowerAtModel(df,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"size_mdr.csv")
 
+# compute test power at the random boundary points 
+###########################################################
+
+# obtain minimum distance model for technical and simulate the test power
+mdr = min_dst_logit(df,"ncontrols","ncases",formula_mdr,
+                    test = asymptotic, nSimulation = 200)
+
+res= simulatePowerAtBoundary(df,p=df$p,mdr, nSimulation=1000, eps=0.6)
+write.csv(res,"power_mdr.csv")
+
