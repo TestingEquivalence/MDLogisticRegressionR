@@ -1,6 +1,6 @@
 library(parallel)
 
-resample.p<-function(i,n,p){
+resample.p<-function(n,p){
   f<-function(r){
     return(rbinom(1,r[1],r[2])/r[1])
   }
@@ -62,7 +62,7 @@ write.results<-function(res,fname){
     close(fc)
 }
 
-updateLogitModel<-function(p,lr,df){
+updateLogitModel<-function(p,lr){
   df=lr$data
   frm=lr$formula
   depVar=all.vars(as.formula(frm))[1]

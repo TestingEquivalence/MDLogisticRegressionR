@@ -16,12 +16,12 @@ frm="p ~ wantsMore+education+age"
 
 # using logit regression
 lr <- glm(frm,df, family = binomial("logit"), weights =n)
-lr$min.distance=sqrt(sum((df$proportionUsing-lr$fitted.values)^2))
+lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap)
 write.result(mdr,"mdr.csv")
 
 

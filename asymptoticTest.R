@@ -3,7 +3,7 @@
 asymptStDev<-function(mdr){
   N=sum(mdr$weights)
   w=mdr$weights/N
-  y=all.vars(as.formula(frm))[1]
+  y=all.vars(as.formula(mdr$frm))[1]
   p=mdr$data[[y]]
   v=p*(1-p)/w
   dd=2*mdr$residuals

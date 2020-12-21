@@ -1,42 +1,26 @@
-bootstrapVolatility<-function(df,mdr,nSimulation){
+bootstrapVolatility<-function(mdr,nSimulation){
   #calculate bootstrap volatility
-  n=df[[mdr$zeroCounts]]+df[[mdr$oneCounts]]
-  p=df[[mdr$oneCounts]]/n
+  y=all.vars(as.formula(mdr$frm))[1]
+  p=mdr$data[[y]]
+  n=mdr$weights
   
   mdr$test="asymptotic"
   res=rep(NA,nSimulation)
-  i=1
   
-  repeat{
-    skip= FALSE
-    np=resample.p(i,n,p)
-    
-    tryCatch({
-      nmdr=updateMinDistanceModel(p=np,mdr=mdr,df=df)
-      }, 
-    error = function(e) { 
-      skip=TRUE
-      })
-    
-    if(skip) { 
-      next 
-    }  
-    
+  for (i in c(1:nSimulation)){
+    np=resample.p(n,p)
+    nmdr=updateMinDistanceModel(p=np,mdr)
     res[i]=nmdr$min.distance^2
-    i=i+1
-    if (i>nSimulation) break
   }
-  
-  
-  
-  return(sd(res))
+
+    return(sd(res))
 }
 
-bootstrapTest<-function(df,mdr,nSimulation){
+bootstrapTest<-function(mdr,nSimulation){
   
   
   #calculate asymptotic min eps
-  vol = bootstrapVolatility(df,mdr,nSimulation)
+  vol = bootstrapVolatility(mdr,nSimulation)
   qt=qnorm(1-mdr$alpha,0,1)
   aps = mdr$min.distance^2 + qt*vol
   return(sqrt(aps))

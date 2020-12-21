@@ -29,14 +29,14 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
   lr <- glm(mdr$formula,mdr$data, family = quasibinomial("logit"), weights =mdr$weights)
   
   # dummy model for technical reasons
-  md= lm(frm, df)
+  md= lm(frm, mdr$data)
   y=all.vars(as.formula(frm))[1]
   
   # logistic model for given parameters
   distance<-function(coef){
     md$coefficients=coef
-    l=predict.lm(md,data)
-    logistic(l)-df[[y]]
+    l=predict.lm(md,mdr$data)
+    logistic(l)-mdr$data[[y]]
   }
   
   # calculate minimum distance estimator
@@ -48,7 +48,7 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
   mdr$min.distance=sqrt(deviance(res))
   mdr$coefficients=coef(res)
   mdr$residuals=res$fvec
-  mdr$fitted=res$fvec+df[[y]]
+  mdr$fitted=res$fvec+mdr$data[[y]]
   
   # test results
   mdr$min.epsilon=NA
@@ -58,18 +58,17 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
   }
 
   if ("bootstrap"==test){
-    mdr$min.epsilon=bootstrapTest(df,mdr,nSimulation)
+    mdr$min.epsilon=bootstrapTest(mdr,nSimulation)
   }
   
   return(mdr)
 }
 
-updateMinDistanceModel<-function(p,mdr,df){
-  n=df[[mdr$zeroCounts]]+df[[mdr$oneCounts]]
-  df[[mdr$oneCounts]]=n*p
-  df[[mdr$zeroCounts]]=n-df[[mdr$oneCounts]]
+updateMinDistanceModel<-function(p,mdr){
+  df=mdr$data
+  y=all.vars(as.formula(mdr$frm))[1]
+  df[[y]]=p
   
-  nlr=min_dst_logit(df,zeroCounts =mdr$zeroCounts ,oneCounts =mdr$oneCounts ,
-                    covariates =mdr$covariates ,test =mdr$test ,alpha =mdr$alpha )
+  nlr=min_dst_logit(mdr$frm,df,weights=mdr$weights,test = mdr$test)
   return(nlr)
 }
