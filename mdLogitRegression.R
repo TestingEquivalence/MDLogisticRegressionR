@@ -1,68 +1,56 @@
 source("asymptoticTest.R")
 source("bootstrapTest.R")
 source("simulation.R")
+library(minpack.lm)
 
 logit=qlogis
 logistic = plogis
 asymptotic="asymptotic"
 bootstrap="bootstrap"
 
-min_dst_logit<-function(df,zeroCounts,oneCounts,covariates,  alpha=0.05,
-                        test, nSimulation=200){
-  # prepare data
-  # look for name of probability
-  i=1
-  p="p"
-  repeat{
-    if(!(p %in% colnames(df))) {break()}
-    p=paste("p",i,sep="")
-    i=i+1
-  }
-   
-  kdf=data.frame(n=df[[zeroCounts]]+df[[oneCounts]])
-  kdf$p=df[[oneCounts]]/kdf$n
-  df[[p]]=kdf$p
+min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
+                        nSimulation=200){
   
-  # formula for regression
-  fr=paste(p," ~ ",covariates)
-  fr=as.formula(fr)
+  #initial information
+  mdr=list()
+  mdr$data=data
+  mdr$formula=as.formula(formula)
+  mdr$frm=formula
+  mdr$weights=weights
+  mdr$alpha=alpha
+  mdr$test=test
+  mdr$nSimulation=nSimulation
+  
+ 
+  
+  
+  
+  #logit regression for initial values
+  lr <- glm(mdr$formula,mdr$data, family = quasibinomial("logit"), weights =mdr$weights)
   
   # dummy model for technical reasons
-  md= lm(fr, data=df)
+  md= lm(frm, df)
+  y=all.vars(as.formula(frm))[1]
   
   # logistic model for given parameters
   distance<-function(coef){
     md$coefficients=coef
-    l=predict.lm(md,df)
-    logistic(l)
+    l=predict.lm(md,data)
+    logistic(l)-df[[y]]
   }
   
-  #logit regression for initial values
-  lr = glm(fr, data = df, family = quasibinomial("logit"), weights = kdf$n)
-  
-  
   # calculate minimum distance estimator
-  fr1=paste(p,"~ distance(coef)")
-  fr1=as.formula(fr1)
-  mdr=nls(fr1, data=df,start=list(coef=lr$coefficients))
   
-  # additional information
-  mdr$zeroCounts=zeroCounts
-  mdr$oneCounts=oneCounts
-  mdr$test=test
-  mdr$alpha=alpha
-  mdr$formula=fr1
-  mdr$covariates=covariates
-  mdr$dependentVariable=kdf$p
-  mdr$n=kdf$n
+  res=nls.lm(par=lr$coefficients, fn=distance)
+  mdr$result.nls.lm=res
   
   # calculate min distance
-  mdr$min.distance=sqrt(deviance(mdr))
-  mdr$coefficients=coef(mdr)
-  names(mdr$coefficients)=names(coef(lr))
+  mdr$min.distance=sqrt(deviance(res))
+  mdr$coefficients=coef(res)
+  mdr$residuals=res$fvec
+  mdr$fitted=res$fvec+df[[y]]
   
   # test results
-  mdr$alpha=alpha
   mdr$min.epsilon=NA
   
   if (asymptotic==test) {

@@ -2,28 +2,26 @@ source("dataSets.R")
 source("mdLogitRegression.R")
 source("size.R")
 source("power.R")
-source("bootstrapTest.R")
 
 # data
 df=FujiFerilitySurvey()
 str(df)
 
 df$n=df$using+df$notUsing
-df$proportionUsing=df$using/df$n
+df$p=df$using/df$n
+frm="p ~ wantsMore+education+age"
 
 # fitting the model and perform a single equivalence tests
 ###########################################################
 
-# using logit refression
-lr <- glm(proportionUsing ~ wantsMore+education+age,
-                data = df, family = binomial("logit"), weights = n)
+# using logit regression
+lr <- glm(frm,df, family = binomial("logit"), weights =n)
 lr$min.distance=sqrt(sum((df$proportionUsing-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                         test = bootstrap, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 write.result(mdr,"mdr.csv")
 
 
@@ -32,6 +30,7 @@ write.result(mdr,"mdr.csv")
 ###########################################################
 
 #fit two models to obtain model probabilities
+
 lr = glm(proportionUsing ~ wantsMore+education+age,
          data = df, family = binomial("logit"), weights = n)
 

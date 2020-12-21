@@ -1,11 +1,12 @@
 
 
 asymptStDev<-function(mdr){
-  N=sum(mdr$n)
-  w=mdr$n/N
-  p=mdr$dependentVariable
+  N=sum(mdr$weights)
+  w=mdr$weights/N
+  y=all.vars(as.formula(frm))[1]
+  p=mdr$data[[y]]
   v=p*(1-p)/w
-  dd=2*(p-fitted(mdr))
+  dd=2*mdr$residuals
   vol=sum(dd*v*dd)/N
   return(sqrt(vol))
 }
