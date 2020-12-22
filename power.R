@@ -1,15 +1,8 @@
-randomExteriorPoint<-function(p,df,mdr, eps){
+randomExteriorPoint<-function(p,mdr, eps){
   repeat{
     skip= FALSE
-    sp=resample.p(1,mdr$n,p)
-    
-    tryCatch({mdr= updateMinDistanceModel(sp,mdr,df)}, 
-             error = function(e) { skip=TRUE})
-    
-    if(skip) { 
-      next 
-    }  
-    
+    sp=resample.p(mdr$n,p)
+    mdr= updateMinDistanceModel(sp,mdr)
     
     if (mdr$min.distance>=eps){
       return(sp)
@@ -17,12 +10,12 @@ randomExteriorPoint<-function(p,df,mdr, eps){
   }
 }
 
-linearBoundaryPoint<-function(interiorPoint,exteriorPoint,df,mdr, eps){
+linearBoundaryPoint<-function(interiorPoint,exteriorPoint,mdr, eps){
   mdr$test=asymptotic
   aim<-function(a){
     #print(a)
     lc=a*interiorPoint+(1-a)*exteriorPoint
-    nmdr=updateMinDistanceModel(lc,mdr,df)
+    nmdr=updateMinDistanceModel(lc,mdr)
     return(nmdr$min.distance-eps)
   }
   
@@ -31,7 +24,7 @@ linearBoundaryPoint<-function(interiorPoint,exteriorPoint,df,mdr, eps){
 }
 
 
-simulatePowerAtBoundary<-function(df,p,mdr, nSimulation, eps){
+simulatePowerAtBoundary<-function(p,mdr, nSimulation, eps){
   set.seed(01032020)
   exteriorPoints=list()
   bndPoints=list()
@@ -40,22 +33,22 @@ simulatePowerAtBoundary<-function(df,p,mdr, nSimulation, eps){
   nPoints=100
   
   for (i in c(1:nPoints)){
-    exteriorPoints[[i]]=randomExteriorPoint(p,df,mdr,eps)
+    exteriorPoints[[i]]=randomExteriorPoint(p,mdr,eps)
   }
   
   for (i in c(1:nPoints)){
     bndPoints[[i]]=linearBoundaryPoint(interiorPoint = p,
                                        exteriorPoint = exteriorPoints[[i]],
-                                       df, mdr, eps)
+                                       mdr, eps)
   }
   
   mdr$test=test
   
   cl=getCluster()
-  power=parSapply(cl,bndPoints, simulatePowerAtPoint,df,mdr, nSimulation,eps)
+  power=parSapply(cl,bndPoints, simulatePowerAtPoint,mdr, nSimulation,eps)
   stopCluster(cl)
   
-  # power=sapply(bndPoints, simulatePowerAtPoint,df,mdr, nSimulation,eps)
+  # power=sapply(bndPoints, simulatePowerAtPoint,mdr, nSimulation,eps)
   
   return(power)
   }

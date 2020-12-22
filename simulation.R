@@ -76,32 +76,19 @@ updateLogitModel<-function(p,lr){
 }
 
 
-simulatePowerAtPoint<-function(p,df,mdr, nSimulation,eps){
+simulatePowerAtPoint<-function(p,mdr, nSimulation,eps){
   set.seed(01032020)
-  psim=lapply(c(1:(nSimulation+100)), resample.p,n=mdr$n,p)
-  res=c()
-  
-  i=1
-  repeat{
-    skip= FALSE
-    
-    tryCatch({
-      nmdr=updateMinDistanceModel(p=psim[[i]],mdr,df)
-      res=c(res,(nmdr$min.epsilon<=eps))
-    }, 
-    error = function(e) { 
-      skip=TRUE
-    })
-    
-    if(skip) { 
-      next 
-    }  
-    
-    
-    i=i+1
-    if (i>nSimulation) break
+  psim=list()
+  for (i in c(1:nSimulation)){
+    psim[[i]]=resample.p(mdr$n,p)
   }
   
+  res=rep(NA,nSimulation)
+  
+  for (i in c(1:nSimulation)){
+    nmdr=updateMinDistanceModel(p=psim[[i]],mdr)
+    res[i]=nmdr$min.epsilon<=eps
+  }
   
   return(sum(res==TRUE)/nSimulation)
 }
@@ -115,7 +102,8 @@ getCluster<-function(){
   cl <- makeCluster(no_cores,'SOCK')
   clusterExport(cl,c("min_dst_logit","resample.p","updateMinDistanceModel","simulatePowerAtPoint",
                      "logit", "logistic","asymptStDev","asymptoticTest",
-                     "bootstrapVolatility","bootstrapTest","linearBoundaryPoint","asymptotic"))
+                     "bootstrapVolatility","bootstrapTest","linearBoundaryPoint","asymptotic",
+                     "nls.lm"))
   
   return(cl)
 }

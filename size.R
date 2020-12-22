@@ -10,7 +10,7 @@ simulatePowerAtModel<-function(df,n,p,lr, updateLR, nSimulation){
   
   res=list()
   for (i in c(1:nSimulation)){
-    nlr=updateLR(p=psim[[i]],lr,df)
+    nlr=updateLR(p=psim[[i]],lr)
     res[[i]]=mdr2results(nlr)
   }
 

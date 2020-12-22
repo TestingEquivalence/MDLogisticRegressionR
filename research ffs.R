@@ -15,7 +15,7 @@ frm="p ~ wantsMore+education+age"
 ###########################################################
 
 # using logit regression
-lr <- glm(frm,df, family = binomial("logit"), weights =n)
+lr = glm(frm,df, family = binomial("logit"), weights =n)
 lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
@@ -31,11 +31,9 @@ write.result(mdr,"mdr.csv")
 
 #fit two models to obtain model probabilities
 
-lr = glm(proportionUsing ~ wantsMore+education+age,
-         data = df, family = binomial("logit"), weights = n)
+lr = glm(frm,df, family = binomial("logit"), weights =n)
 
-mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                    test = asymptotic, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 # compute distribution using logit regression 
 res=simulatePowerAtModel(df,n=df$n,
@@ -45,7 +43,7 @@ res=simulatePowerAtModel(df,n=df$n,
 write.results(res,"estimation_lr_power_lr.csv")
 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=fitted(mdr),
+                         p=mdr$fitted,
                          lr=lr,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_lr.csv")
@@ -58,7 +56,7 @@ res=simulatePowerAtModel(df,n=df$n,
 write.results(res,"estimation_lr_power_mdr.csv")
 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=fitted(mdr),
+                         p=mdr$fitted,
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_mdr.csv")
@@ -67,8 +65,7 @@ write.results(res,"estimation_mdr_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                        test = asymptotic, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
@@ -81,8 +78,7 @@ write.results(res,"size_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(df,"notUsing","using","wantsMore+education+age",
-                    test = asymptotic, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
-res= simulatePowerAtBoundary(df,p=df$proportionUsing,mdr, nSimulation=1000, eps=0.35)
+res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.34)
 write.csv(res,"power_mdr.csv")

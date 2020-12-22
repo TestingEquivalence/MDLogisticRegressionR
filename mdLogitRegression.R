@@ -29,8 +29,8 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
   lr <- glm(mdr$formula,mdr$data, family = quasibinomial("logit"), weights =mdr$weights)
   
   # dummy model for technical reasons
-  md= lm(frm, mdr$data)
-  y=all.vars(as.formula(frm))[1]
+  md= lm(mdr$frm, mdr$data)
+  y=all.vars(as.formula(mdr$frm))[1]
   
   # logistic model for given parameters
   distance<-function(coef){
