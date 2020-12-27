@@ -82,3 +82,40 @@ mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.34)
 write.csv(res,"power_mdr.csv")
+
+
+
+
+# for development
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+set.seed(01032020)
+exteriorPoints=list()
+bndPoints=list()
+nPoints=1
+eps=0.34
+
+for (i in c(1:nPoints)){
+  exteriorPoints[[i]]=randomExteriorPoint(df$p,mdr,eps)
+}
+
+for (i in c(1:nPoints)){
+  bndPoints[[i]]=linearBoundaryPoint(interiorPoint = df$p,
+                                     exteriorPoint = exteriorPoints[[i]],
+                                     mdr, eps)
+}
+
+set.seed(01012021)
+res=simulatePowerAtModel(df,n=df$n,
+                         p=bndPoints[[1]],
+                         lr=mdr,
+                         updateLR =updateMinDistanceModel,nSimulation=1000)
+md=c()
+meps=c()
+for (i in c(1:length(res))){
+  md=c(md,res[[i]]$min.distance)
+  meps=c(meps,res[[i]]$min.epsilon)
+}
+sum(meps<=0.34)/10
+
+
+

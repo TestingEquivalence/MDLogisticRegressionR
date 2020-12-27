@@ -6,68 +6,65 @@ source("bootstrapTest.R")
 
 # prepare data
 df=esoph
-#View(df)
-df=aggregate(cbind(ncases,ncontrols) ~ agegp+tobgp, df, sum)
 df$agegp=factor(df$agegp,ordered = FALSE)
-#df$alcgp=factor(df$alcgp,ordered = FALSE)
+df$alcgp=factor(df$alcgp,ordered = FALSE)
 df$tobgp=factor(df$tobgp,ordered = FALSE)
+df=aggregate(cbind(ncases,ncontrols) ~ tobgp+alcgp, df, sum)
 str(df)
 
 df$n=df$ncases+df$ncontrols
 df$p=df$ncases/(df$ncases+df$ncontrols)
+#df=df[df$n>=10,]
 
-formula_lr="p ~ agegp+tobgp"
-formula_mdr="agegp+tobgp"
+frm="p ~ tobgp+alcgp"
 
 # fitting the model and perform a single equivalence tests
 ###########################################################
 
 # using logit refression
-lr <- glm(formula_lr,
-          data = df, family = binomial("logit"), weights = n)
+lr <- glm(frm, df, family = binomial("logit"), weights = n)
 lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(df,"ncontrols","ncases",formula_mdr,
-                    test = bootstrap, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 write.result(mdr,"mdr.csv")
+
+
 
 # compute distribution of the estimated regression parameters
 # at the linear model (so if the linear model were true)
 ###########################################################
 
 #fit two models to obtain model probabilities
-lr = glm(formula_lr,
-         data = df, family = binomial("logit"), weights = n)
 
-set.seed(01012021)
-mdr = min_dst_logit(df,"ncontrols","ncases",formula_mdr,
-                    test = asymptotic, nSimulation = 200)
+lr = glm(frm,df, family = binomial("logit"), weights =n)
+
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 # compute distribution using logit regression 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=fitted(lr),
+                         p=lr$fitted.values,
                          lr=lr,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_lr_power_lr.csv")
 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=fitted(mdr),
+                         p=mdr$fitted,
                          lr=lr,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_lr.csv")
 
 # compute distribution using minimum distance regression 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=fitted(lr),
+                         p=lr$fitted.values,
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_lr_power_mdr.csv")
 
 res=simulatePowerAtModel(df,n=df$n,
-                         p=fitted(mdr),
+                         p=mdr$fitted,
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_mdr.csv")
@@ -76,9 +73,7 @@ write.results(res,"estimation_mdr_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-set.seed(01012021)
-mdr = min_dst_logit(df,"ncontrols","ncases",formula_mdr,
-                    test = asymptotic, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
@@ -91,10 +86,7 @@ write.results(res,"size_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-set.seed(01012021)
-mdr = min_dst_logit(df,"ncontrols","ncases",formula_mdr,
-                    test = asymptotic, nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
-res= simulatePowerAtBoundary(df,p=df$p,mdr, nSimulation=1000, eps=0.6)
+res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.34)
 write.csv(res,"power_mdr.csv")
-

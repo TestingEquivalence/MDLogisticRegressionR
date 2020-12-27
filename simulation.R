@@ -80,17 +80,17 @@ simulatePowerAtPoint<-function(p,mdr, nSimulation,eps){
   set.seed(01032020)
   psim=list()
   for (i in c(1:nSimulation)){
-    psim[[i]]=resample.p(mdr$n,p)
+    psim[[i]]=resample.p(mdr$weights,p)
   }
   
   res=rep(NA,nSimulation)
   
   for (i in c(1:nSimulation)){
     nmdr=updateMinDistanceModel(p=psim[[i]],mdr)
-    res[i]=nmdr$min.epsilon<=eps
+    res[i]=nmdr$min.epsilon
   }
   
-  return(sum(res==TRUE)/nSimulation)
+  return(sum(res<=eps)/nSimulation)
 }
 
 
