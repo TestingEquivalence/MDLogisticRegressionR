@@ -14,7 +14,6 @@ str(df)
 
 df$n=df$ncases+df$ncontrols
 df$p=df$ncases/(df$ncases+df$ncontrols)
-#df=df[df$n>=10,]
 
 frm="p ~ tobgp+alcgp"
 
@@ -88,5 +87,5 @@ write.results(res,"size_mdr.csv")
 # obtain minimum distance model for technical and simulate the test power
 mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
-res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.34)
+res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.35)
 write.csv(res,"power_mdr.csv")
