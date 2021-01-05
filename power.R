@@ -1,7 +1,7 @@
 randomExteriorPoint<-function(p,mdr, eps){
   repeat{
     skip= FALSE
-    sp=resample.p(mdr$n,p)
+    sp=resample.p(mdr$weights,p)
     mdr= updateMinDistanceModel(sp,mdr)
     
     if (mdr$min.distance>=eps){
