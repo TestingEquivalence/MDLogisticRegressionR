@@ -48,6 +48,13 @@ res=simulatePowerAtModel(df,n=df$n,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_lr.csv")
 
+res=simulatePowerAtModel(df,n=df$n,
+                         p=df$p,
+                         lr=lr,
+                         updateLR =updateLogitModel,nSimulation=1000)
+write.results(res,"data_power_lr.csv")
+
+
 # compute distribution using minimum distance regression 
 res=simulatePowerAtModel(df,n=df$n,
                          p=lr$fitted.values,
@@ -60,6 +67,12 @@ res=simulatePowerAtModel(df,n=df$n,
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_mdr.csv")
+
+res=simulatePowerAtModel(df,n=df$n,
+                         p=df$p,
+                         lr=mdr,
+                         updateLR =updateMinDistanceModel,nSimulation=1000)
+write.results(res,"data_set_power_mdr.csv")
 
 # compute test power at the fitted model 
 ###########################################################
