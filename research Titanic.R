@@ -11,7 +11,7 @@ df$Survived=ifelse(df$Survived=="Yes", df$Freq, 0)
 df$Deceased=ifelse(df$Survived==0, df$Freq, 0)
 df=aggregate(cbind(Survived,Deceased) ~ Class+Sex+Age, df, sum)
 df$n=df$Survived+df$Deceased
-df=df[df$n>10,]
+df=df[df$n>=20,]
 df$p=df$Survived/df$n
 
 frm="p ~ Class+Sex+Age"
@@ -27,7 +27,7 @@ write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 write.result(mdr,"mdr.csv")
 
 
@@ -55,6 +55,12 @@ res=simulatePowerAtModel(df,n=df$n,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_lr.csv")
 
+res=simulatePowerAtModel(df,n=df$n,
+                         p=df$p,
+                         lr=lr,
+                         updateLR =updateLogitModel,nSimulation=1000)
+write.results(res,"data_power_lr.csv")
+
 # compute distribution using minimum distance regression 
 res=simulatePowerAtModel(df,n=df$n,
                          p=lr$fitted.values,
@@ -67,6 +73,12 @@ res=simulatePowerAtModel(df,n=df$n,
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_mdr.csv")
+
+res=simulatePowerAtModel(df,n=df$n,
+                         p=df$p,
+                         lr=mdr,
+                         updateLR =updateMinDistanceModel,nSimulation=1000)
+write.results(res,"data_set_power_mdr.csv")
 
 # compute test power at the fitted model 
 ###########################################################

@@ -9,7 +9,7 @@ df=esoph
 df$agegp=factor(df$agegp,ordered = FALSE)
 df$alcgp=factor(df$alcgp,ordered = FALSE)
 df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ tobgp+alcgp, df, sum)
+df=aggregate(cbind(ncases,ncontrols) ~ alcgp+tobgp, df, sum)
 str(df)
 
 df$n=df$ncases+df$ncontrols
@@ -55,6 +55,12 @@ res=simulatePowerAtModel(df,n=df$n,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_lr.csv")
 
+res=simulatePowerAtModel(df,n=df$n,
+                         p=df$p,
+                         lr=lr,
+                         updateLR =updateLogitModel,nSimulation=1000)
+write.results(res,"data_power_lr.csv")
+
 # compute distribution using minimum distance regression 
 res=simulatePowerAtModel(df,n=df$n,
                          p=lr$fitted.values,
@@ -67,6 +73,12 @@ res=simulatePowerAtModel(df,n=df$n,
                          lr=mdr,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"estimation_mdr_power_mdr.csv")
+
+res=simulatePowerAtModel(df,n=df$n,
+                         p=df$p,
+                         lr=mdr,
+                         updateLR =updateMinDistanceModel,nSimulation=1000)
+write.results(res,"data_set_power_mdr.csv")
 
 # compute test power at the fitted model 
 ###########################################################
