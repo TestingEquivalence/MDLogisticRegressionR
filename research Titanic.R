@@ -14,7 +14,7 @@ df$n=df$Survived+df$Deceased
 df=df[df$n>=20,]
 df$p=df$Survived/df$n
 
-frm="p ~ Class+Sex+Age"
+frm="p ~ 0+Class+Sex+Age"
 
 
 # fitting the model and perform a single equivalence tests
@@ -84,7 +84,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 res=simulatePowerAtModel(df,
                          n=df$n,

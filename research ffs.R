@@ -9,7 +9,7 @@ str(df)
 
 df$n=df$using+df$notUsing
 df$p=df$using/df$n
-frm="p ~ wantsMore+education+age"
+frm="p ~ 0+wantsMore+education+age"
 
 # fitting the model and perform a single equivalence tests
 ###########################################################

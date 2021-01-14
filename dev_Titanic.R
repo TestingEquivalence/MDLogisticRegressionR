@@ -37,16 +37,4 @@ lrAdO <- glm(frm, dfAdO, family = binomial("logit"), weights = n)
 summary(lrAdO)
 confint(lrAdO)
 
-# development esoph
-#########################################
 
-################################################################
-library(mlbench)
-#data(PimaIndiansDiabetes)
-data("BreastCancer")
-
-df=BreastCancer
-df$Id=NULL
-summary(df)
-frm="Class~."
-lm=glm(frm, df, family = binomial("logit"))

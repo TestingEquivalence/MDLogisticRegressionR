@@ -9,13 +9,14 @@ df=esoph
 df$agegp=factor(df$agegp,ordered = FALSE)
 df$alcgp=factor(df$alcgp,ordered = FALSE)
 df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ alcgp+tobgp, df, sum)
+df=aggregate(cbind(ncases,ncontrols) ~ agegp+alcgp, df, sum)
 str(df)
 
 df$n=df$ncases+df$ncontrols
 df$p=df$ncases/(df$ncases+df$ncontrols)
+df=df[df$n>=20,]
 
-frm="p ~ tobgp+alcgp"
+frm="p ~ agegp+alcgp"
 
 # fitting the model and perform a single equivalence tests
 ###########################################################
@@ -27,7 +28,7 @@ write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 write.result(mdr,"mdr.csv")
 
 
