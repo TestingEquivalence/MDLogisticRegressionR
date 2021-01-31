@@ -11,10 +11,10 @@ df$Survived=ifelse(df$Survived=="Yes", df$Freq, 0)
 df$Deceased=ifelse(df$Survived==0, df$Freq, 0)
 df=aggregate(cbind(Survived,Deceased) ~ Class+Sex+Age, df, sum)
 df$n=df$Survived+df$Deceased
-df=df[df$n>=20,]
+df=df[df$Age!="Child",]
 df$p=df$Survived/df$n
 
-frm="p ~ 0+Class+Sex+Age"
+frm="p ~ Class+Sex"
 
 
 # fitting the model and perform a single equivalence tests
