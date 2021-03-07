@@ -9,7 +9,7 @@ str(df)
 
 df$n=df$using+df$notUsing
 df$p=df$using/df$n
-frm="p ~ 0+wantsMore+education+age"
+frm="p ~ wantsMore+education+age"
 
 # fitting the model and perform a single equivalence tests
 ###########################################################
@@ -21,7 +21,7 @@ write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
 write.result(mdr,"mdr.csv")
 
 
@@ -78,7 +78,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2,nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
