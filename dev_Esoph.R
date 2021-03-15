@@ -1,3 +1,5 @@
+library(forcats)
+
 # development esoph
 #########################################
 df=esoph
@@ -84,6 +86,15 @@ frm="p ~ agegp+alcgp"
 lr_age_alc=glm(frm, df, family = binomial("logit"), weights = n)
 summary(lr_age_alc)
 confint(lr_age_alc)
+
+df=esoph
+df$alcgp=fct_collapse(df$alcgp,over80=c("80-119","120+"))
+df$agegp=factor(df$agegp,ordered = FALSE)
+df$alcgp=factor(df$alcgp,ordered = FALSE)
+df$tobgp=factor(df$tobgp,ordered = FALSE)
+df=aggregate(cbind(ncases,ncontrols) ~ agegp+alcgp, df, sum)
+df$n=df$ncases+df$ncontrols
+df$p=df$ncases/(df$ncases+df$ncontrols)
 
 ##################
 # age +tob 

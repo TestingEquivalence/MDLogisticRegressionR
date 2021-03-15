@@ -4,31 +4,29 @@ source("size.R")
 source("power.R")
 source("bootstrapTest.R")
 
-# prepare data
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ agegp+alcgp, df, sum)
-# str(df)
+# data 
 
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-df=df[df$n>20,]
+df=as.data.frame(Titanic)
+df$Survived=ifelse(df$Survived=="Yes", df$Freq, 0)
+df$Deceased=ifelse(df$Survived==0, df$Freq, 0)
+df=aggregate(cbind(Survived,Deceased) ~ Class+Sex, df, sum)
+df$n=df$Survived+df$Deceased
+df$p=df$Survived/df$n
 
-frm="p ~ agegp+alcgp"
+frm="p ~ Class+Sex"
+
 
 # fitting the model and perform a single equivalence tests
 ###########################################################
 
-# using logit refression
+# using logit regression
 lr <- glm(frm, df, family = binomial("logit"), weights = n)
 lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
 write.result(mdr,"mdr.csv")
 
 
@@ -85,7 +83,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
@@ -100,5 +98,5 @@ write.results(res,"size_mdr.csv")
 # obtain minimum distance model for technical and simulate the test power
 mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
-res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.3)
+res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.35)
 write.csv(res,"power_mdr.csv")
