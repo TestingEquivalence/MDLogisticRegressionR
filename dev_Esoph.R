@@ -6,127 +6,25 @@ df=esoph
 df$agegp=factor(df$agegp,ordered = FALSE)
 df$alcgp=factor(df$alcgp,ordered = FALSE)
 df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ alcgp+tobgp+agegp, df, sum)
-str(df)
 
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
+df_age=aggregate(cbind(ncases,ncontrols) ~ agegp, df, sum)
+write.csv(df_age,"df_age.csv")
 
-frm="p ~ tobgp+alcgp+agegp"
-lr=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr)
-confint(lr)
+df_alc=aggregate(cbind(ncases,ncontrols) ~ alcgp, df, sum)
+write.csv(df_alc,"alcgp.csv")
 
-##################
-# age only
+df_tob=aggregate(cbind(ncases,ncontrols) ~ tobgp, df, sum)
+write.csv(df_tob, "tobgp.csv")
 
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ agegp, df, sum)
-
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-
-frm="p ~ agegp"
-lr_age=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr_age)
-confint(lr_age)
-
-
-##################
-# alc only
-
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ alcgp, df, sum)
-
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-
-frm="p ~ alcgp"
-lr_alc=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr_alc)
-confint(lr_alc)
-
-##################
-# tob only
-
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ tobgp, df, sum)
-
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-
-frm="p ~ tobgp"
-lr_tob=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr_tob)
-confint(lr_tob)
-
-##################
-# age +alc 
-
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ agegp+alcgp, df, sum)
-
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-df=df[df$n>=20,]
-
-frm="p ~ agegp+alcgp"
-lr_age_alc=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr_age_alc)
-confint(lr_age_alc)
-
-df=esoph
 df$alcgp=fct_collapse(df$alcgp,over80=c("80-119","120+"))
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ agegp+alcgp, df, sum)
+df$agegp=fct_collapse(df$agegp,i25_44=c("25-34","35-44"), over65=c("65-74","75+"))
+df$tobgp=fct_collapse(df$tobgp,under10=c("0-9g/day"), over10=c("20-29","30+","10-19"))
+
+
+df=aggregate(cbind(ncases,ncontrols) ~ alcgp+tobgp+agegp, df, sum)
 df$n=df$ncases+df$ncontrols
 df$p=df$ncases/(df$ncases+df$ncontrols)
 
-##################
-# age +tob 
-
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ agegp+tobgp, df, sum)
-
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-
-frm="p ~ agegp+tobgp"
-lr_age_tob=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr_age_tob)
-confint(lr_age_tob)
-
-##################
-# alc +tob 
-
-df=esoph
-df$agegp=factor(df$agegp,ordered = FALSE)
-df$alcgp=factor(df$alcgp,ordered = FALSE)
-df$tobgp=factor(df$tobgp,ordered = FALSE)
-df=aggregate(cbind(ncases,ncontrols) ~ alcgp+tobgp, df, sum)
-
-df$n=df$ncases+df$ncontrols
-df$p=df$ncases/(df$ncases+df$ncontrols)
-
-frm="p ~ alcgp+tobgp"
-lr_alc_tob=glm(frm, df, family = binomial("logit"), weights = n)
-summary(lr_alc_tob)
-confint(lr_alc_tob)
-
+frm="p ~ agegp+alcgp+tobgp"
+lr <- glm(frm, df, family = binomial("logit"), weights = n)
+lr
