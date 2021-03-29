@@ -83,7 +83,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
@@ -92,7 +92,7 @@ res=simulatePowerAtModel(df,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"size_mdr.csv")
 
-# compute test power at the random boundary points 
+ # compute test power at the random boundary points 
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
