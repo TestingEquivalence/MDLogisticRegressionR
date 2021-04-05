@@ -26,13 +26,12 @@ linearBoundaryPoint<-function(interiorPoint,exteriorPoint,mdr, eps){
 }
 
 
-simulatePowerAtBoundary<-function(p,mdr, nSimulation, eps){
+simulatePowerAtBoundary<-function(p,mdr, nSimulation, eps, nPoints=100){
   set.seed(01032020)
   exteriorPoints=list()
   bndPoints=list()
   test=mdr$test
   mdr$test=asymptotic
-  nPoints=100
   
   for (i in c(1:nPoints)){
     exteriorPoints[[i]]=randomExteriorPoint(p,mdr,eps)
