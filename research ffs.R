@@ -91,7 +91,7 @@ write.results(res,"size_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
 
 res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.4, nPoints = 10)
 write.csv(res,"power_mdr.csv")
