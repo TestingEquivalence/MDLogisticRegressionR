@@ -92,7 +92,7 @@ res=simulatePowerAtModel(df,
                          updateLR =updateMinDistanceModel,nSimulation=1000)
 write.results(res,"size_mdr.csv")
 
- # compute test power at the random boundary points 
+  # compute test power at the random boundary points 
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power

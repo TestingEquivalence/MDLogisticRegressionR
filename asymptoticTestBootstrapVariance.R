@@ -16,7 +16,7 @@ bootstrapVolatility<-function(mdr,nSimulation){
     return(sd(res))
 }
 
-bootstrapTest<-function(mdr,nSimulation){
+asymptoticTestBootstrapVariance<-function(mdr,nSimulation){
   
   
   #calculate asymptotic min eps

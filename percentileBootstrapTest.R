@@ -1,4 +1,4 @@
-bootstrapTest2<-function(mdr,nSimulation){
+BootstrapTestPercentileMethod<-function(mdr,nSimulation){
   #calculate bootstrap distribution
   y=all.vars(as.formula(mdr$frm))[1]
   p=mdr$data[[y]]

@@ -3,6 +3,7 @@ source("mdLogitRegression.R")
 source("size.R")
 source("power.R")
 source("bootstrapTest.R")
+library(forcats)
 
 # prepare data
 df=esoph
@@ -31,7 +32,7 @@ write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic, nSimulation = 1000)
 write.result(mdr,"mdr.csv")
 
 
