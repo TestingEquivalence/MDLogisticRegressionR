@@ -1,5 +1,5 @@
 source("asymptoticTest.R")
-source("asymptoticBootstrapVariance.R")
+source("asymptoticTestBootstrapVariance.R")
 source("percentileBootstrapTest.R")
 source("empiricalBootstrapTest.R")
 source("simulation.R")
@@ -70,7 +70,7 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
   }
   
   if (empiricalBootstrap==test){
-    mdr$min.epsilon=empiricalBootstrap(mdr,nSimulation)
+    mdr$min.epsilon=empiricalBootstrapTest(mdr,nSimulation)
   }
   
   return(mdr)
