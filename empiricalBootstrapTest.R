@@ -10,12 +10,12 @@ empiricalBootstrapTest<-function(mdr,nSimulation){
   for (i in c(1:nSimulation)){
     np=resample.p(n,p)
     nmdr=updateMinDistanceModel(p=np,mdr)
-    res[i]=nmdr$min.distance^2-mdr$min.distance^2
+    res[i]=nmdr$min.distance^2
   }
   
   #calculate quantile of bootstrap distribution
   qt=quantile(res,mdr$alpha,type=1)
-  min_eps=-qt+mdr$min.distance^2
+  min_eps=-qt+2*mdr$min.distance^2
   if (min_eps<0) {return(0)}
   return(sqrt(min_eps))
 }

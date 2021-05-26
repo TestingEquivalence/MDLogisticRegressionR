@@ -9,7 +9,6 @@ logit=qlogis
 logistic = plogis
 asymptotic="asymptotic"
 asymptoticBootstrapVariance="asymptoticBootstrapVariance"
-percentileBootstrap="percentileBootstrap"
 empiricalBootstrap="empiricalBootstrap"
 
 min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
@@ -63,10 +62,6 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
 
   if (asymptoticBootstrapVariance==test){
     mdr$min.epsilon=asymptoticTestBootstrapVariance(mdr,nSimulation)
-  }
-  
-  if (percentileBootstrap==test){
-    mdr$min.epsilon=percentileBootstrap(mdr,nSimulation)
   }
   
   if (empiricalBootstrap==test){

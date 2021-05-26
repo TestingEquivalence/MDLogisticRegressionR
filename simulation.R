@@ -103,8 +103,8 @@ getCluster<-function(){
   clusterExport(cl,c("min_dst_logit","resample.p","updateMinDistanceModel","simulatePowerAtPoint",
                      "logit", "logistic","asymptStDev","asymptoticTest",
                      "linearBoundaryPoint","nls.lm","asymptotic",
-                     "asymptoticBootstrapVariance","percentileBootstrap","empiricalBootstrap",
-                     "asymptoticTestBootstrapVariance","BootstrapTestPercentileMethod","empiricalBootstrapTest"))
+                     "asymptoticBootstrapVariance","empiricalBootstrap",
+                     "asymptoticTestBootstrapVariance","empiricalBootstrapTest"))
   
   return(cl)
 }
