@@ -104,7 +104,8 @@ getCluster<-function(){
                      "logit", "logistic","asymptStDev","asymptoticTest",
                      "linearBoundaryPoint","nls.lm","asymptotic",
                      "asymptoticBootstrapVariance","empiricalBootstrap",
-                     "asymptoticTestBootstrapVariance","empiricalBootstrapTest"))
+                     "asymptoticTestBootstrapVariance","empiricalBootstrapTest",
+                     "tPercentileBootstrapTest","tPercentileBootstrap"))
   
   return(cl)
 }
