@@ -21,7 +21,7 @@ write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = empiricalBootstrap, nSimulation = 1000)
 write.result(mdr,"mdr.csv")
 
 
@@ -78,7 +78,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap,nSimulation = 200)
+mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap,nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
@@ -91,9 +91,9 @@ write.results(res,"size_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptoticBootstrapVariance, nSimulation = 1000)
 
-res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.4, nPoints = 10)
+res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.35, nPoints = 100)
 write.csv(res,"power_mdr.csv")
 
 
