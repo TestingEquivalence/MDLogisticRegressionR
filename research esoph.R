@@ -2,7 +2,6 @@ source("dataSets.R")
 source("mdLogitRegression.R")
 source("size.R")
 source("power.R")
-source("bootstrapTest.R")
 library(forcats)
 
 # prepare data
@@ -25,14 +24,14 @@ frm="p ~ agegp + alcgp+ tobgp"
 # fitting the model and perform a single equivalence tests
 ###########################################################
 
-# using logit refression
+# using logit regression
 lr <- glm(frm, df, family = binomial("logit"), weights = n)
 lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
 write.result(mdr,"mdr.csv")
 
 
@@ -89,7 +88,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
