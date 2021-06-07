@@ -7,6 +7,7 @@ library(minpack.lm)
 
 logit=qlogis
 logistic = plogis
+none=""
 asymptotic="asymptotic"
 asymptoticBootstrapVariance="asymptoticBootstrapVariance"
 empiricalBootstrap="empiricalBootstrap"

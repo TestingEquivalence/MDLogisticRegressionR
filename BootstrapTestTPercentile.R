@@ -4,7 +4,7 @@ tPercentileBootstrapTest<-function(mdr,nSimulation){
   p=mdr$data[[y]]
   n=mdr$weights
   
-  mdr$test="asymptotic"
+  mdr$test=none
   res=rep(NA,nSimulation)
   stDev=asymptStDev(mdr)
   
