@@ -4,7 +4,7 @@ bootstrapVolatility<-function(mdr,nSimulation){
   p=mdr$data[[y]]
   n=mdr$weights
   
-  mdr$test="asymptotic"
+  mdr$test=none
   res=rep(NA,nSimulation)
   
   for (i in c(1:nSimulation)){
