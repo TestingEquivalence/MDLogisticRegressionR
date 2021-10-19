@@ -26,10 +26,6 @@ min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
   mdr$test=test
   mdr$nSimulation=nSimulation
   
- 
-  
-  
-  
   #logit regression for initial values
   lr <- glm(mdr$formula,mdr$data, family = quasibinomial("logit"), weights =mdr$weights)
   
