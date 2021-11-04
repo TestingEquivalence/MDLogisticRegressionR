@@ -1,18 +1,20 @@
 source("dataSets.R")
 source("mdLogitRegression.R")
-source("size.R")
-source("power.R")
+source("simulation/size.R")
+source("simulation/power.R")
 
 # data 
 
 df=as.data.frame(Titanic)
 df$Survived=ifelse(df$Survived=="Yes", df$Freq, 0)
 df$Deceased=ifelse(df$Survived==0, df$Freq, 0)
-df=aggregate(cbind(Survived,Deceased) ~ Class+Sex, df, sum)
+df=aggregate(cbind(Survived,Deceased) ~ Class+Sex+Age, df, sum)
 df$n=df$Survived+df$Deceased
+df=df[df$n>=20,]
+# df=df[df$Age!="Child",]
 df$p=df$Survived/df$n
 
-frm="p ~ Class+Sex"
+frm="p ~ Class+Sex+Age"
 
 
 # fitting the model and perform a single equivalence tests
@@ -25,7 +27,7 @@ write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 write.result(mdr,"mdr.csv")
 
 
@@ -82,7 +84,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = bootstrap2, nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,

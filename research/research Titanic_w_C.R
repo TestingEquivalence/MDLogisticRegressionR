@@ -1,28 +1,33 @@
 source("dataSets.R")
 source("mdLogitRegression.R")
-source("size.R")
-source("power.R")
+source("simulation/size.R")
+source("simulation/power.R")
 
-# data
-df=FujiFerilitySurvey()
-str(df)
+# data 
 
-df$n=df$using+df$notUsing
-df$p=df$using/df$n
-frm="p ~ wantsMore+education+age"
+df=as.data.frame(Titanic)
+df$Survived=ifelse(df$Survived=="Yes", df$Freq, 0)
+df$Deceased=ifelse(df$Survived==0, df$Freq, 0)
+df=aggregate(cbind(Survived,Deceased) ~ Class+Sex, df, sum)
+df$n=df$Survived+df$Deceased
+df$p=df$Survived/df$n
+
+frm="p ~ Class+Sex"
+
 
 # fitting the model and perform a single equivalence tests
 ###########################################################
 
 # using logit regression
-lr = glm(frm,df, family = binomial("logit"), weights =n)
+lr <- glm(frm, df, family = binomial("logit"), weights = n)
 lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
 write.result(lr,"lr.csv")
 
 # using minimum distance regression
 set.seed(01012021)
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptoticBootstrapVariance, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
 write.result(mdr,"mdr.csv")
+
 
 
 # compute distribution of the estimated regression parameters
@@ -54,7 +59,6 @@ res=simulatePowerAtModel(df,n=df$n,
                          updateLR =updateLogitModel,nSimulation=1000)
 write.results(res,"data_power_lr.csv")
 
-
 # compute distribution using minimum distance regression 
 res=simulatePowerAtModel(df,n=df$n,
                          p=lr$fitted.values,
@@ -78,7 +82,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap,nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
@@ -91,10 +95,7 @@ write.results(res,"size_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptoticBootstrapVariance)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
 
 res= simulatePowerAtBoundary(p=df$p,mdr, nSimulation=1000, eps=0.35)
 write.csv(res,"power_mdr.csv")
-
-
-

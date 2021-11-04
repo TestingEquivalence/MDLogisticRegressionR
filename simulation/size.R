@@ -1,6 +1,3 @@
-source("asymptoticTest.R")
-source("simulation.R")
-
 simulatePowerAtModel<-function(df,n,p,lr, updateLR, nSimulation){
   set.seed(01032020)
   psim=list()

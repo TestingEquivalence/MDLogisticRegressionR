@@ -1,9 +1,10 @@
-source("asymptoticTest.R")
-source("asymptoticTestBootstrapVariance.R")
-source("empiricalBootstrapTest.R")
-source("simulation.R")
-source("BootstrapTestTPercentile.R")
 library(minpack.lm)
+
+source("tests/asymptoticTest.R")
+source("tests/asymptoticTestBootstrapVariance.R")
+source("tests/empiricalBootstrapTest.R")
+source("simulation/simulation.R")
+source("tests/BootstrapTestTPercentile.R")
 
 logit=qlogis
 logistic = plogis

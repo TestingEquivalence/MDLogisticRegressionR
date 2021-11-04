@@ -1,7 +1,7 @@
 source("dataSets.R")
 source("mdLogitRegression.R")
-source("size.R")
-source("power.R")
+source("simulation/size.R")
+source("simulation/power.R")
 library(forcats)
 
 # prepare data
@@ -88,7 +88,7 @@ write.results(res,"data_set_power_mdr.csv")
 ###########################################################
 
 # obtain minimum distance model for technical and simulate the test power
-mdr = min_dst_logit(frm,df,weights=df$n,test = asymptoticBootstrapVariance, nSimulation = 1000)
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic, nSimulation = 1000)
 
 res=simulatePowerAtModel(df,
                          n=df$n,
