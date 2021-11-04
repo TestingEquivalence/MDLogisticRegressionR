@@ -34,3 +34,53 @@ source("mdLogitRegression.R")
 # -----------------------------------------------------------
 # Example Fiji Fertility Study
 # -----------------------------------------------------------
+
+# See dataSets.R for the detailed information on this data set
+# Prepare data:
+
+df=FujiFerilitySurvey()
+str(df)
+
+df$n=df$using+df$notUsing
+df$p=df$using/df$n
+frm="p ~ wantsMore+education+age"
+
+# Perform the usual logistic regression:
+lr = glm(frm,df, family = binomial("logit"), weights =n)
+
+# Compute the distance between the observed counting frequencies 
+# and the model, computed by usual logistic regression: 
+lr$min.distance=sqrt(sum((df$p-lr$fitted.values)^2))
+
+# Perform the minimum distance logistic regression:
+mdr = min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+
+# Function min_dst_logit has the following arguments:
+# formula - an object of class "formula": a symbolic description of the model to be fitted
+# data - data frame containing the variables in the model
+# weights - the vector of all counts for each combinations of predictors, i.e. number of observations in each cell of multi-way contingency table 
+# test - the type of the equivalence test to be performed, possible values are: 
+#     asymptotic; asymptoticBootstrapVariance; empiricalBootstrap; tPercentileBootstrap
+# alpha - the nominal significance level for the equivalence test
+# nSimulation - number of the bootstrap simulations for the equivalence test
+
+# Compare the regression coefficients, which are estimated by the usual logistic regression 
+# and by the minimum distance logistic regression:
+coef(lr)
+coef(mdr)
+
+# Compare the Euclidean distances between the models and data:
+lr$min.distance
+mdr$min.distance
+
+# Perform the equivalence test using all available methods and compare the results
+mdr_asympt= min_dst_logit(frm,df,weights=df$n,test = asymptotic)
+mdr_asympt_bootstrap_variance=min_dst_logit(frm,df,weights=df$n,test = asymptoticBootstrapVariance, nSimulation = 1000)
+mdr_empirical_bootstrap=min_dst_logit(frm,df,weights=df$n,test = empiricalBootstrap, nSimulation = 1000)
+mdr_tPercentile_bootstrap=min_dst_logit(frm,df,weights=df$n,test = tPercentileBootstrap, nSimulation = 1000)
+
+# Compare the results. The minimum tolerance parameter epsilon, for which H0 can be rejected, is reported.
+mdr_asympt$min.epsilon
+mdr_asympt_bootstrap_variance$min.epsilon
+mdr_empirical_bootstrap$min.epsilon
+mdr_tPercentile_bootstrap$min.epsilon

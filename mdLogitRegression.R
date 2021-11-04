@@ -13,6 +13,16 @@ asymptoticBootstrapVariance="asymptoticBootstrapVariance"
 empiricalBootstrap="empiricalBootstrap"
 tPercentileBootstrap="tPercentileBootstrap"
 
+# Function "min_dst_logit" performs the minimum distance logistic regression and
+# the corresponding equivalence tests simultaneously.
+# Function "min_dst_logit" has the following arguments:
+# formula - an object of class "formula": a symbolic description of the model to be fitted
+# data - data frame containing the variables in the model
+# weights - the vector of all counts for each combinations of predictors, i.e. number of observations in each cell of multi-way contingency table 
+# test - the type of the equivalence test to be performed, possible values are: asymptotic; asymptoticBootstrapVariance; empiricalBootstrap; tPercentileBootstrap
+# alpha - the nominal significance level for the equivalence test
+# nSimulation - number of the bootstrap simulations for the equivalence test
+
 min_dst_logit<-function(formula,data, weights,  test, alpha=0.05,
                         nSimulation=200){
   
