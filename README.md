@@ -1,3 +1,17 @@
+This project belongs to a published article:
+
+Vladimir Ostrovski:
+"Testing equivalence to binary generalized linear models with application to logistic regression""
+Statistics & Probability Letters,
+Volume 191,
+2022,
+109658,
+ISSN 0167-7152,
+https://doi.org/10.1016/j.spl.2022.109658.
+(https://www.sciencedirect.com/science/article/pii/S0167715222001778)
+
+
+
  Please take a look into examples.R to get started!   
 
  This project provides the minimum distance logistic regression for the situation
